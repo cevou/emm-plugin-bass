@@ -19,13 +19,26 @@
 #ifndef BASSPLUGIN_H
 #define BASSPLUGIN_H
 
-#include "bass_global.h"
+#include "extensionsystem/iplugin.h"
 
-class EMMPLUGINBASSSHARED_EXPORT BassPlugin
+namespace Bass {
+
+namespace Internal {
+
+class BassPlugin : public ExtensionSystem::IPlugin
 {
-
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "de.eventmusicmachine.EmmPlugin" FILE "bass.json")
 public:
     BassPlugin();
+    ~BassPlugin();
+
+    bool initialize(const QStringList &arguments, QString *errorMessage = 0);
+    void extensionsInitialized();
+    ShutdownFlag aboutToShutdown();
 };
+
+} // namespace Internal
+} // namespace Bass
 
 #endif // BASSPLUGIN_H

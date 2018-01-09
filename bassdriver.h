@@ -16,15 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#ifndef EMMPLUGINBASS_GLOBAL_H
-#define EMMPLUGINBASS_GLOBAL_H
+#ifndef BASSDRIVER_H
+#define BASSDRIVER_H
 
-#include <QtCore/qglobal.h>
+#include <audio/idriver.h>
 
-#if defined(BASS_LIBRARY)
-#  define BASS_EXPORT Q_DECL_EXPORT
-#else
-#  define BASS_EXPORT Q_DECL_IMPORT
-#endif
+namespace Bass {
 
-#endif // EMMPLUGINBASS_GLOBAL_H
+namespace Internal {
+
+class BassDriver : public Audio::IDriver
+{
+    Q_OBJECT
+public:
+    BassDriver();
+
+    QString id() const override;
+    QString name() const override;
+    QStringList supportedMimeTypes() const override;
+};
+
+} // namespace Internal
+} // namespace Bass
+
+#endif // BASSDRIVER_H

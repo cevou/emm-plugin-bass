@@ -16,15 +16,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#ifndef EMMPLUGINBASS_GLOBAL_H
-#define EMMPLUGINBASS_GLOBAL_H
+#ifndef BASSWORKER_H
+#define BASSWORKER_H
 
-#include <QtCore/qglobal.h>
+#include <QObject>
+#include <bass.h>
 
-#if defined(BASS_LIBRARY)
-#  define BASS_EXPORT Q_DECL_EXPORT
-#else
-#  define BASS_EXPORT Q_DECL_IMPORT
-#endif
+namespace Bass {
 
-#endif // EMMPLUGINBASS_GLOBAL_H
+namespace Internal {
+
+
+class BassWorker : public QObject
+{
+    Q_OBJECT
+public:
+    ~BassWorker();
+
+public slots:
+    void initialize(int deviceId);
+
+private:
+    bool m_initialized = false;
+    BASS_INFO m_info;
+
+signals:
+    void outputCountUpdated(int);
+    void errorOccured(int);
+};
+
+} // namespace Internal
+} // namespace Bass
+
+#endif // BASSWORKER_H

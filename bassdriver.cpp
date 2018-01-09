@@ -16,15 +16,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#ifndef EMMPLUGINBASS_GLOBAL_H
-#define EMMPLUGINBASS_GLOBAL_H
+#include <bass.h>
 
-#include <QtCore/qglobal.h>
+#include "bassdriver.h"
+#include "bassdevice.h"
 
-#if defined(BASS_LIBRARY)
-#  define BASS_EXPORT Q_DECL_EXPORT
-#else
-#  define BASS_EXPORT Q_DECL_IMPORT
-#endif
+using namespace Bass::Internal;
 
-#endif // EMMPLUGINBASS_GLOBAL_H
+BassDriver::BassDriver() : Audio::IDriver()
+{
+    BASS_DEVICEINFO info;
+    for (int a = 1; BASS_GetDeviceInfo(a, &info); a++) {
+        if (info.flags & BASS_DEVICE_ENABLED) {
+            m_devices.append(new BassDevice(a, info));
+        }
+    }
+}
+
+QString BassDriver::id() const
+{
+    return "bass";
+}
+
+QString BassDriver::name() const
+{
+    return "BASS";
+}
+
+QStringList BassDriver::supportedMimeTypes() const
+{
+
+    QStringList mimeTypes;
+    mimeTypes << "audio/mpeg" << "audio/x-wav" << "audio/ogg" << "audio/x-aiff";
+    return mimeTypes;
+}

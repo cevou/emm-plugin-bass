@@ -16,15 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#ifndef EMMPLUGINBASS_GLOBAL_H
-#define EMMPLUGINBASS_GLOBAL_H
+#include "basschannel.h"
 
-#include <QtCore/qglobal.h>
+using namespace Bass::Internal;
 
-#if defined(BASS_LIBRARY)
-#  define BASS_EXPORT Q_DECL_EXPORT
-#else
-#  define BASS_EXPORT Q_DECL_IMPORT
-#endif
+BassChannel::BassChannel(QString fileName) : Audio::IChannel()
+{
+    m_stream = BASS_StreamCreateFile(false, fileName.toLatin1(), 0, 0, BASS_SAMPLE_FLOAT | BASS_STREAM_DECODE);
+}
 
-#endif // EMMPLUGINBASS_GLOBAL_H
+void BassChannel::play()
+{
+
+}
+
+void BassChannel::pause()
+{
+
+}
+
+void BassChannel::stop()
+{
+
+}

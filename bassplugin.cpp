@@ -16,9 +16,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#include "bassplugin.h"
+#include <extensionsystem/pluginmanager.h>
+#include <audio/devicemanager.h>
 
+#include "bassplugin.h"
+#include "bassdriver.h"
+
+using namespace Bass::Internal;
 
 BassPlugin::BassPlugin()
 {
+
+}
+
+BassPlugin::~BassPlugin()
+{
+
+}
+
+bool BassPlugin::initialize(const QStringList &arguments, QString *errorMessage)
+{
+    Q_UNUSED(arguments)
+    Q_UNUSED(errorMessage)
+\
+    Audio::DeviceManager::instance()->registerDriver(new BassDriver);
+    return true;
+}
+
+void BassPlugin::extensionsInitialized()
+{
+
+}
+
+ExtensionSystem::IPlugin::ShutdownFlag BassPlugin::aboutToShutdown()
+{
+    return SynchronousShutdown;
 }

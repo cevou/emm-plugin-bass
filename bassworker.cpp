@@ -16,15 +16,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#ifndef EMMPLUGINBASS_GLOBAL_H
-#define EMMPLUGINBASS_GLOBAL_H
+#include "bassworker.h"
 
-#include <QtCore/qglobal.h>
+using namespace Bass::Internal;
 
-#if defined(BASS_LIBRARY)
-#  define BASS_EXPORT Q_DECL_EXPORT
-#else
-#  define BASS_EXPORT Q_DECL_IMPORT
-#endif
+BassWorker::~BassWorker()
+{
+    if (!m_initialized) {
+        return;
+    }
 
-#endif // EMMPLUGINBASS_GLOBAL_H
+    BASS_Free();
+}
+
+void BassWorker::initialize(int deviceId)
+{
+    if (!BASS_Init(deviceId, 44100, 0, 0, NULL)) {
+        emit errorOccured(BASS_ErrorGetCode());
+        return;
+    }
+
+    if (!BASS_SetDevice(deviceId)) {
+        emit errorOccured(BASS_ErrorGetCode());
+        return;
+    }
+
+    if (!BASS_GetInfo(&m_info)) {
+        emit errorOccured(BASS_ErrorGetCode());
+        return;
+    }
+
+    emit outputCountUpdated(m_info.speakers / 2);
+
+    m_initialized = true;
+}

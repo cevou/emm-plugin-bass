@@ -1,0 +1,15 @@
+{
+    "Name": "BASS",
+    "Version": "3.0.0",
+    "Required": false,
+    "HiddenByDefault": false,
+    "Vendor": "Event Music Machine",
+    "Category": "Audio",
+    "Description": "BASS audio output",
+    "Dependencies": [
+        {
+            "Name": "Audio",
+            "Version": "3.0.0"
+        }
+    ]
+}

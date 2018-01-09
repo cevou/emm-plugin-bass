@@ -16,15 +16,44 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#ifndef EMMPLUGINBASS_GLOBAL_H
-#define EMMPLUGINBASS_GLOBAL_H
+#ifndef BASSDEVICE_H
+#define BASSDEVICE_H
 
-#include <QtCore/qglobal.h>
+#include <QThread>
+#include <audio/idevice.h>
+#include <bass.h>
 
-#if defined(BASS_LIBRARY)
-#  define BASS_EXPORT Q_DECL_EXPORT
-#else
-#  define BASS_EXPORT Q_DECL_IMPORT
-#endif
+namespace Audio {
+class IChannel;
+} // namespace Audio
 
-#endif // EMMPLUGINBASS_GLOBAL_H
+namespace Bass {
+
+namespace Internal {
+
+class BassDevice : public Audio::IDevice
+{
+public:
+    BassDevice(int deviceId, BASS_DEVICEINFO deviceInfo);
+    ~BassDevice();
+
+    void init();
+    QString name() override;
+    int outputCount() override;
+    Audio::IChannel *createChannel(QString fileName) override;
+
+private:
+    int m_deviceId;
+    QThread m_bassThread;
+    BASS_DEVICEINFO m_deviceInfo;
+    bool m_initialized = false;
+    int m_channelCount = 0;
+
+private slots:
+    void updateOutputCount(int count);
+};
+
+} // namespace Internal
+} // namespace Audio
+
+#endif // BASSDEVICE_H
