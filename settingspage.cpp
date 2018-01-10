@@ -16,39 +16,43 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#include "bassworker.h"
+#include <QSettings>
+#include <extensionsystem/pluginmanager.h>
+
+#include "settingspage.h"
+#include "ui_settingspage.h"
 
 using namespace Bass::Internal;
 
-BassWorker::~BassWorker()
+SettingsPage::SettingsPage() :
+    Settings::ISettingsPage(),
+    m_ui(new Ui::SettingsPage)
 {
-    if (!m_initialized) {
-        return;
-    }
-
-    if (!BASS_Free()) {
-        emit errorOccured(BASS_ErrorGetCode());
-    }
+    m_ui->setupUi(this);
 }
 
-void BassWorker::initialize(int deviceId)
+SettingsPage::~SettingsPage()
 {
-    if (!BASS_Init(deviceId, 44100, 0, 0, NULL)) {
-        emit errorOccured(BASS_ErrorGetCode());
-        return;
-    }
+    delete m_ui;
+}
 
-    if (!BASS_SetDevice(deviceId)) {
-        emit errorOccured(BASS_ErrorGetCode());
-        return;
-    }
+QString SettingsPage::id() const
+{
+    return "BassSettings";
+}
 
-    if (!BASS_GetInfo(&m_info)) {
-        emit errorOccured(BASS_ErrorGetCode());
-        return;
-    }
+void SettingsPage::apply()
+{
+    QSettings *settings = ExtensionSystem::PluginManager::instance()->settings();
+    settings->beginGroup("bass");
+    settings->setValue("buffer", m_ui->bufferSpinBox->value());
+    settings->endGroup();
+}
 
-    emit outputCountUpdated(m_info.speakers / 2);
-
-    m_initialized = true;
+void SettingsPage::load()
+{
+    QSettings *settings = ExtensionSystem::PluginManager::instance()->settings();
+    settings->beginGroup("bass");
+    m_ui->bufferSpinBox->setValue(settings->value("buffer", 500).toInt());
+    settings->endGroup();
 }

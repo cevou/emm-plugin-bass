@@ -18,9 +18,12 @@
 
 #include <extensionsystem/pluginmanager.h>
 #include <audio/devicemanager.h>
+#include <settings/settingsmanager.h>
+#include <settings/navigationtreeitem.h>
 
 #include "bassplugin.h"
 #include "bassdriver.h"
+#include "settingsfactory.h"
 
 using namespace Bass::Internal;
 
@@ -38,8 +41,13 @@ bool BassPlugin::initialize(const QStringList &arguments, QString *errorMessage)
 {
     Q_UNUSED(arguments)
     Q_UNUSED(errorMessage)
-\
+
     Audio::DeviceManager::instance()->registerDriver(new BassDriver);
+
+    Settings::NavigationTreeItem *settingsItem = Settings::SettingsManager::createNavigationNode("BASS", tr("BASS"));
+    settingsItem->setFactory(new SettingsFactory());
+    Settings::SettingsManager::navigationNode("AUDIO")->addChild(settingsItem);
+
     return true;
 }
 

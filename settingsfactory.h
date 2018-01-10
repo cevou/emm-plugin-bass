@@ -16,39 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#include "bassworker.h"
+#ifndef SETTINGSFACTORY_H
+#define SETTINGSFACTORY_H
 
-using namespace Bass::Internal;
+#include <settings/isettingspagefactory.h>
+#include <settings/isettingspage.h>
 
-BassWorker::~BassWorker()
+#include "settingspage.h"
+
+namespace Bass {
+
+namespace Internal {
+
+class SettingsFactory : public Settings::ISettingsPageFactory
 {
-    if (!m_initialized) {
-        return;
+public:
+    Settings::ISettingsPage *createPage() {
+        return new SettingsPage();
     }
+};
 
-    if (!BASS_Free()) {
-        emit errorOccured(BASS_ErrorGetCode());
-    }
-}
+} // namespace Internal
+} // namespace Bass
 
-void BassWorker::initialize(int deviceId)
-{
-    if (!BASS_Init(deviceId, 44100, 0, 0, NULL)) {
-        emit errorOccured(BASS_ErrorGetCode());
-        return;
-    }
-
-    if (!BASS_SetDevice(deviceId)) {
-        emit errorOccured(BASS_ErrorGetCode());
-        return;
-    }
-
-    if (!BASS_GetInfo(&m_info)) {
-        emit errorOccured(BASS_ErrorGetCode());
-        return;
-    }
-
-    emit outputCountUpdated(m_info.speakers / 2);
-
-    m_initialized = true;
-}
+#endif // SETTINGSFACTORY_H

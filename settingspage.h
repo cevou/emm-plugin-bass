@@ -16,39 +16,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#include "bassworker.h"
+#ifndef SETTINGSPAGE_H
+#define SETTINGSPAGE_H
 
-using namespace Bass::Internal;
+#include <settings/isettingspage.h>
 
-BassWorker::~BassWorker()
-{
-    if (!m_initialized) {
-        return;
-    }
+namespace Bass {
 
-    if (!BASS_Free()) {
-        emit errorOccured(BASS_ErrorGetCode());
-    }
+namespace Internal {
+
+namespace Ui {
+class SettingsPage;
 }
 
-void BassWorker::initialize(int deviceId)
+class SettingsPage : public Settings::ISettingsPage
 {
-    if (!BASS_Init(deviceId, 44100, 0, 0, NULL)) {
-        emit errorOccured(BASS_ErrorGetCode());
-        return;
-    }
+    Q_OBJECT
 
-    if (!BASS_SetDevice(deviceId)) {
-        emit errorOccured(BASS_ErrorGetCode());
-        return;
-    }
+public:
+    SettingsPage();
+    ~SettingsPage();
 
-    if (!BASS_GetInfo(&m_info)) {
-        emit errorOccured(BASS_ErrorGetCode());
-        return;
-    }
+    QString id() const override;
 
-    emit outputCountUpdated(m_info.speakers / 2);
+    void load() override;
+    void apply() override;
 
-    m_initialized = true;
-}
+private:
+    Ui::SettingsPage *m_ui;
+};
+
+} // namespace Internal
+} // namespace Bass
+
+#endif // SETTINGSPAGE_H
