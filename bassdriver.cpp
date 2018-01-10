@@ -50,3 +50,8 @@ QStringList BassDriver::supportedMimeTypes() const
     mimeTypes << "audio/mpeg" << "audio/x-wav" << "audio/ogg" << "audio/x-aiff";
     return mimeTypes;
 }
+
+void BassDriver::setBuffer(int ms)
+{
+    BASS_SetConfig(BASS_CONFIG_BUFFER, ms);
+}

@@ -34,6 +34,8 @@ public:
     QString id() const override;
     QString name() const override;
     QStringList supportedMimeTypes() const override;
+
+    static void setBuffer(int ms);
 };
 
 } // namespace Internal
