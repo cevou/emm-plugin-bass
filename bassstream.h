@@ -16,35 +16,46 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#ifndef BASSWORKER_H
-#define BASSWORKER_H
+#ifndef BASSSTREAM_H
+#define BASSSTREAM_H
 
 #include <QObject>
+#include <QTimer>
 #include <bass.h>
 
 namespace Bass {
 
 namespace Internal {
 
-class BassWorker : public QObject
+class BassStream : public QObject
 {
     Q_OBJECT
 public:
-    ~BassWorker();
+    BassStream();
+    ~BassStream();
 
 public slots:
-    void initialize(int deviceId);
+    void initialize();
+    bool load(QString fileName);
+    void play();
+    void stop();
+    bool isPlaying();
 
 private:
-    bool m_initialized = false;
-    BASS_INFO m_info;
+    HSTREAM m_stream;
+    QTimer *m_timer = nullptr;
+    float m_length;
+
+private slots:
+    void updatePosition();
 
 signals:
-    void outputCountUpdated(int);
-    void errorOccured(int);
+    void errorOccured(int code);
+    void lengthUpdated(float length);
+    void positionChanged(float position, float length);
 };
 
 } // namespace Internal
 } // namespace Bass
 
-#endif // BASSWORKER_H
+#endif // BASSSTREAM_H

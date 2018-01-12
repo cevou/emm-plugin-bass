@@ -21,6 +21,7 @@
 #include "bassdevice.h"
 #include "bassworker.h"
 #include "basschannel.h"
+#include "bassstream.h"
 
 using namespace Bass::Internal;
 
@@ -70,7 +71,13 @@ int BassDevice::outputCount()
     return m_channelCount;
 }
 
-Audio::IChannel *BassDevice::createChannel(QString fileName)
+Audio::IChannel *BassDevice::createChannel()
 {
-    return new BassChannel(fileName);
+    if (!m_initialized) {
+        init();
+    }
+
+    BassStream *stream = new BassStream();
+    stream->moveToThread(&m_bassThread);
+    return new BassChannel(stream);
 }

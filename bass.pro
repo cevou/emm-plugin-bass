@@ -11,7 +11,8 @@ SOURCES += \
     bassdevice.cpp \
     bassworker.cpp \
     basschannel.cpp \
-    settingspage.cpp
+    settingspage.cpp \
+    bassstream.cpp
 
 HEADERS += \
     bass_global.h \
@@ -21,7 +22,8 @@ HEADERS += \
     bassworker.h \
     basschannel.h \
     settingspage.h \
-    settingsfactory.h
+    settingsfactory.h \
+    bassstream.h
 
 EMM_SOURCE_TREE = "../emm"
 EMM_BUILD_TREE = "../build-emm-Desktop_Qt_5_10_0_GCC_64bit-Debug"

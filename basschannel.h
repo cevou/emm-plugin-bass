@@ -25,19 +25,24 @@
 namespace Bass {
 namespace Internal {
 
+class BassStream;
+
 class BassChannel : public Audio::IChannel
 {
     Q_OBJECT
 public:
-    BassChannel(QString fileName);
+    BassChannel(BassStream *stream);
+    ~BassChannel();
 
 public slots:
+    void load(QString fileName) override;
     void play() override;
     void pause() override;
     void stop() override;
+    bool isPlaying() override;
 
 private:
-    HSTREAM m_stream;
+    BassStream *m_stream;
 };
 
 } // namespace Internal

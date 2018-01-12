@@ -17,17 +17,33 @@
  **************************************************************************/
 
 #include "basschannel.h"
+#include "bassstream.h"
 
 using namespace Bass::Internal;
 
-BassChannel::BassChannel(QString fileName) : Audio::IChannel()
+BassChannel::BassChannel(BassStream *stream) :
+    Audio::IChannel(),
+    m_stream(stream)
 {
-    m_stream = BASS_StreamCreateFile(false, fileName.toLatin1(), 0, 0, BASS_SAMPLE_FLOAT | BASS_STREAM_DECODE);
+    QMetaObject::invokeMethod(m_stream, "initialize", Qt::QueuedConnection);
+
+    connect(m_stream, &BassStream::lengthUpdated, this, &BassChannel::lengthUpdated);
+    connect(m_stream, &BassStream::positionChanged, this, &BassChannel::positionChanged);
+}
+
+BassChannel::~BassChannel()
+{
+    delete m_stream;
+}
+
+void BassChannel::load(QString fileName)
+{
+    QMetaObject::invokeMethod(m_stream, "load", Qt::QueuedConnection, Q_ARG(QString, fileName));
 }
 
 void BassChannel::play()
 {
-
+    QMetaObject::invokeMethod(m_stream, "play", Qt::QueuedConnection);
 }
 
 void BassChannel::pause()
@@ -37,5 +53,12 @@ void BassChannel::pause()
 
 void BassChannel::stop()
 {
+    QMetaObject::invokeMethod(m_stream, "stop", Qt::QueuedConnection);
+}
 
+bool BassChannel::isPlaying()
+{
+    bool playing;
+    QMetaObject::invokeMethod(m_stream, "isPlaying", Qt::DirectConnection, Q_RETURN_ARG(bool, playing));
+    return playing;
 }

@@ -40,7 +40,7 @@ public:
     void init();
     QString name() override;
     int outputCount() override;
-    Audio::IChannel *createChannel(QString fileName) override;
+    Audio::IChannel *createChannel() override;
 
 private:
     int m_deviceId;
