@@ -26,7 +26,6 @@ HEADERS += \
     bassstream.h
 
 EMM_SOURCE_TREE = "../emm"
-EMM_BUILD_TREE = "../build-emm-Desktop_Qt_5_10_0_GCC_64bit-Debug"
 
 include(../emm/emmplugin.pri)
 
