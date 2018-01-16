@@ -33,7 +33,7 @@ BassChannel::BassChannel(BassStream *stream) :
 
 BassChannel::~BassChannel()
 {
-    delete m_stream;
+    m_stream->deleteLater();
 }
 
 void BassChannel::load(QString fileName)
